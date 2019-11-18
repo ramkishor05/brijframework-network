@@ -10,12 +10,15 @@ import org.brijframework.network.socket.smtp.SmtpSocket;
 public class GmailEmailSetup {
 	public static final String HOST="smtp.gmail.com";
 	public static final String USER_NAME="ramkishor0509@gmail.com";
-	public static final String PASSWORD="Ram_9450";
+	public static final String PASSWORD="9794273660";
 	public static final int PORT=587;
+	
 	public static final boolean isTLSEnabled=true;
+	
 	public void email(Hashtable<String, Object> attachmentHash){
-		SmtpSocket smtp=new SmtpSocket(HOST, PORT, USER_NAME, PASSWORD,true);
+		SmtpSocket smtp=new SmtpSocket(HOST, PORT, USER_NAME, PASSWORD,isTLSEnabled);
 		EmailGroup emailGroup=new EmailGroup();
+		
 		EmailAddress toEmail=new EmailAddress();
 		toEmail.setName("Brij frame");
 		toEmail.setEmailAddress("ramkishor0509@gmail.com");
@@ -33,6 +36,7 @@ public class GmailEmailSetup {
 		email.setBodyText("This is body");
 		email.setEmailGroup(emailGroup);
 		email.setFrom(toEmail);
+		
 		//email.addAttachment(attachmentHash);
 		Boolean isSend=smtp.sendEmail(email);
 		if(isSend)
@@ -40,8 +44,9 @@ public class GmailEmailSetup {
 		else
 		System.out.println("Email fail");
 	}
-public static void main(String[] args) {
-	GmailEmailSetup setup=new GmailEmailSetup();
-	setup.email(new Hashtable<String,Object>());
-}
+
+	public static void main(String[] args) {
+		GmailEmailSetup setup = new GmailEmailSetup();
+		setup.email(new Hashtable<String, Object>());
+	}
 }

@@ -13,7 +13,7 @@ import org.brijframework.network.beans.EmailBean;
 
 public class SmtpSocket {
 
-	private String ip;
+	private String host;
 	private int port;
 	private String userName;
 	private String password;
@@ -32,8 +32,8 @@ public class SmtpSocket {
 		this(ip, port, userName, password, isTLSEnabled, null);
 	}
 
-	public SmtpSocket(String ip, int port, String userName, String password, boolean isTLSEnabled, HashMap<String, Object> otherProperties) {
-		this.ip = ip;
+	public SmtpSocket(String host, int port, String userName, String password, boolean isTLSEnabled, HashMap<String, Object> otherProperties) {
+		this.host = host;
 		this.port = port;
 		this.userName = userName;
 		this.password = password;
@@ -42,12 +42,12 @@ public class SmtpSocket {
 		this.init();
 	}
 
-	public String getIp() {
-		return this.ip;
+	public void setHost(String host) {
+		this.host = host;
 	}
-
-	public void setIp(String ip) {
-		this.ip = ip;
+	
+	public String getHost() {
+		return host;
 	}
 
 	public int getPort() {
@@ -77,9 +77,10 @@ public class SmtpSocket {
 	public SmtpSocket init() {
 		this.properties = new Properties(System.getProperties());
 		this.properties.put("mail.smtp.starttls.enable", this.isTLSEnabled ? "true" : "false"); //starttls.enable flag true for using secure smpts.
-		this.properties.put("mail.smtp.host", this.ip);
+		this.properties.put("mail.smtp.host", this.host);
 		String auth = (this.userName != null && this.userName.length() > 0) ? "true" : "false";
 		this.properties.put("mail.smtp.auth", auth);
+		this.properties.put("mail.smtp.user", this.userName);
 		this.properties.put("mail.smtp.connectiontimeout", String.valueOf(60 * 1000));
 		this.properties.put("mail.smtp.timeout", String.valueOf(60 * 1000));
 		if (this.otherProperties != null) {
@@ -102,7 +103,7 @@ public class SmtpSocket {
 		try {
 			Session session = Session.getDefaultInstance(this.properties, null);
 			transport = session.getTransport("smtp");
-			transport.connect(this.ip, this.port, this.userName, this.password);
+			transport.connect(this.host, this.port, this.userName, this.password);
 			for (EmailBean emailObject : emailObjectItr) {
 				try {
 					Message message = new MimeMessage(session);
@@ -115,7 +116,7 @@ public class SmtpSocket {
 			return true;
 		} catch (Exception exp) {
 			exp.printStackTrace();
-			throw new RuntimeException("Exception in connecting to SMTP @ " + this.ip + ":" + this.port, exp);
+			throw new RuntimeException("Exception in connecting to SMTP@ " + this.host + ":" + this.port, exp);
 		} finally {
 			try {
 				transport.close();
